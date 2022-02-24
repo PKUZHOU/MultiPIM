@@ -14,5 +14,7 @@ apt-get -y libcurl4-dev
 apt-get -y libcurl4-gnutls-dev
 apt-get -y libicu-dev
 apt-get -y install libxerces-c-dev
-
+apt-get -y install libboost-all-dev
+apt-get -y install  libcurl4-openssl-dev
 ln -s /usr/include/asm-generic /usr/include/asm
+

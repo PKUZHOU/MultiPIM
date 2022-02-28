@@ -90,6 +90,10 @@ class RamulatorMemory : public MemObject {
         inline Address pAddrTovAddr(uint32_t coreId, Address paddr);
         inline bool enableIdealMemNet(MemReq& req);
 
+// dump address
+        void initDumpFile(int mem_ctrl_id);        
+        std::ofstream dump_file;
+        
     private:
         void readComplete(ramulator::Request& req);
         std::function<void(ramulator::Request&)> cb_func;

@@ -1217,7 +1217,13 @@ static void InitSystem(Config& config) {
 
     AggregateStat* memStat = new AggregateStat(true);
     memStat->init("mem", "Memory controller stats");
-    for (auto mem : mems) mem->initStats(memStat);
+
+    int mem_ctrl_id = 0;
+    for (auto mem : mems) {
+        mem->initStats(memStat);
+        //dump memory access file
+        mem->initDumpFile(mem_ctrl_id++);
+    }
     zinfo->rootStat->append(memStat);
 
     //Odds and ends: BuildCacheGroup new'd the cache groups, we need to delete them

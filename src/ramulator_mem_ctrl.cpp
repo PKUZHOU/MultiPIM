@@ -122,6 +122,10 @@ void RamulatorMemory::getStats(MemStats &stat){
     stat.completedPTWs += completedPTWs;
 }
 
+void RamulatorMemory::initDumpFile(int mem_ctrl_id){
+    dump_file = std::ofstream(std::string(zinfo->outputDir) + "/mem_acc_dump_file_" + std::to_string(mem_ctrl_id));
+}
+
 void RamulatorMemory::initStats(AggregateStat* parentStat) {
     AggregateStat* memStats = new AggregateStat();
     memStats->init(name.c_str(), "Memory controller stats");
@@ -185,6 +189,10 @@ inline uint64_t RamulatorMemory::access(MemReq& req) {
 
     bool ideal_memnet = enableIdealMemNet(req);
     Address addr = req.lineAddr << lineBits;
+
+    //dump
+    dump_file <<  addr << std::endl;
+
     int memhops = zinfo->ramulatorWrapper->estimateMemHops(req.srcId, addr, req.isPIMInst, ideal_memnet);
     uint64_t respCycle = req.cycle + minLatency + memhops*minNoCLatency;
     assert(respCycle > req.cycle);

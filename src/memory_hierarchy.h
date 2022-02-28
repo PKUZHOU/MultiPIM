@@ -185,6 +185,8 @@ class MemObject : public GlobAlloc {
         virtual uint64_t getCapacity() {assert(0);return 0;}
         virtual void getStats(MemStats &stat){}
         virtual int getHMCStacks(){return 0;}
+
+        virtual void initDumpFile(int mem_ctrl_id) {};
 };
 
 /* Base class for all cache objects */

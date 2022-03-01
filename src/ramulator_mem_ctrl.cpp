@@ -191,7 +191,7 @@ inline uint64_t RamulatorMemory::access(MemReq& req) {
     Address addr = req.lineAddr << lineBits;
 
     //dump
-    dump_file <<  addr << std::endl;
+    dump_file << req.type <<","<< req.isPIMInst<<","<< req.srcId <<"," << addr << std::endl;
 
     int memhops = zinfo->ramulatorWrapper->estimateMemHops(req.srcId, addr, req.isPIMInst, ideal_memnet);
     uint64_t respCycle = req.cycle + minLatency + memhops*minNoCLatency;

@@ -6,6 +6,7 @@ import sys
 import tqdm
 import numpy as np
 from matplotlib import pyplot as plt
+import h5py
 
 class DIMM:
     def __init__(self, id) -> None:
@@ -20,9 +21,35 @@ class System:
         self.DIMMs = {}
         # number of total dimms
         self.n_dimm = n_dimm 
+        self.pu_cores = 0
 
         for id in range(self.n_dimm):
             self.add_DIMM(id)
+
+    def zsimIPC(self, fname):
+        # Read the ZSIM stats file, in hdf5 format
+        fzsim = h5py.File(fname,"r")
+
+        # Get the single dataset in the file
+        dset = fzsim["stats"]["root"]
+        #print "dset_size: "+str(dset.size)
+
+        findex = dset.size - 1 # We just need to access to the final stats (dont need to know intermeddiate stats)
+        num_cores = dset[findex]['core'].size # get the number of cores
+        print("cores: "+str(num_cores))
+        self.pu_cores = num_cores
+        cycles = [0] * num_cores
+        instructions = [0] * num_cores
+        ipc = [0] * num_cores
+
+        for c in range(0, num_cores):
+            cycles[c] = dset[findex]['core'][c]['cycles']
+            instructions[c] = dset[findex]['core'][c]['instrs']
+            if cycles[c] != 0:
+                ipc[c] = float(instructions[c])/float(cycles[c])
+                # print("[core-"+str(c)+"] cycles: "+str(cycles[c])+" instrs: "+str(instructions[c])+" IPC: "+str(ipc[c]))
+
+        return cycles, ipc
 
     def add_DIMM(self, id):
         if id not in self.DIMMs.keys():
@@ -60,8 +87,19 @@ class System:
                 dst_id = self.get_target_dimm(addr)
                 req_map[src_id][dst_id] += 1
 
-        print(req_map)
+        # print(req_map)
         return req_map
+
+    def estimate_inter_DIMM_cycles(self):
+        n_ext_mem_acc = 0
+        for src_id, dimm in self.DIMMs.items():
+            for req in dimm.reqs:
+                req_type, addr = req
+                dst_id = self.get_target_dimm(addr)
+                if dst_id != src_id:
+                    n_ext_mem_acc += 1
+        
+        return n_ext_mem_acc * 8
 
 def main(cfg): 
     dump_file_path = cfg.dump_file
@@ -81,25 +119,43 @@ def main(cfg):
         dimm_id = srcId % cfg.n_dimm
         system.record_request(dimm_id, acc_type, addr)
     
-    req_map = system.calc_inter_DIMM_requests()
     # plot the heatmap
-    system.plot(req_map)
+    if cfg.plot_heat_map:
+        req_map = system.calc_inter_DIMM_requests()
+        system.plot(req_map)
     
+    cycles, ipc = system.zsimIPC(cfg.h5_out)
+    extimated_inter_DIMM_cycles = system.estimate_inter_DIMM_cycles()
+    print(sum(cycles),extimated_inter_DIMM_cycles)
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--dump_file",
         type=str,
-        default = "output/mem_acc_dump_file_0",
+        default = "exp1/mem_acc_dump_file_0",
         help="Path of the dump file",
     )
 
     parser.add_argument(
         "--n_dimm",
         type = int, 
-        default= 8,
+        default= 32,
         help="number of DIMMs",
+    )
+
+    parser.add_argument(
+        "--h5_out",
+        type = str, 
+        default= "exp1/traces.out.zsim.h5",
+        help="zsim stats h5",
+    )
+
+    parser.add_argument(
+        "--plot_heat_map",
+        type = bool, 
+        default= False,
     )
 
     cfg = parser.parse_args()

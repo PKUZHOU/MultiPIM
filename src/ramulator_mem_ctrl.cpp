@@ -195,7 +195,8 @@ inline uint64_t RamulatorMemory::access(MemReq& req) {
 
     int memhops = zinfo->ramulatorWrapper->estimateMemHops(req.srcId, addr, req.isPIMInst, ideal_memnet);
     uint64_t respCycle = req.cycle + minLatency + memhops*minNoCLatency;
-    assert(respCycle > req.cycle);
+    // assert(respCycle > req.cycle);
+    assert(respCycle + 1> req.cycle);
 
     if ((req.type != PUTS /*discard clean writebacks*/) && zinfo->eventRecorders[req.srcId]) {
         bool isWrite = (req.type == PUTX);

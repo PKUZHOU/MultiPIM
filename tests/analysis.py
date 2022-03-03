@@ -68,7 +68,7 @@ class System:
         dimm_id = (addr >> offset) % self.n_dimm
         return dimm_id
 
-    def plot(self,req_map):
+    def plot(self,req_map,req_map_name):
         fig, ax = plt.subplots()  
         im=ax.imshow(req_map)
         ax.set_xticks(np.arange(self.n_dimm))
@@ -76,7 +76,7 @@ class System:
         fig.colorbar(im,pad=0.03)
         plt.ylabel("src ID")
         plt.xlabel("dst ID")
-        plt.savefig("req_map.png")
+        plt.savefig(req_map_name)
 
 
     def calc_inter_DIMM_requests(self):
@@ -122,11 +122,13 @@ def main(cfg):
     # plot the heatmap
     if cfg.plot_heat_map:
         req_map = system.calc_inter_DIMM_requests()
-        system.plot(req_map)
+        system.plot(req_map,cfg.pic_name+".png")
     
-    cycles, ipc = system.zsimIPC(cfg.h5_out)
-    extimated_inter_DIMM_cycles = system.estimate_inter_DIMM_cycles()
-    print(sum(cycles),extimated_inter_DIMM_cycles)
+    # cal the cycles and ipc
+    if cfg.cal_cycles:
+        cycles, ipc = system.zsimIPC(cfg.h5_out)
+        extimated_inter_DIMM_cycles = system.estimate_inter_DIMM_cycles()
+        print(sum(cycles),extimated_inter_DIMM_cycles)
 
 if __name__ == '__main__':
 
@@ -155,9 +157,21 @@ if __name__ == '__main__':
     parser.add_argument(
         "--plot_heat_map",
         type = bool, 
+        default= True,
+    )
+
+    parser.add_argument(
+        "--cal_cycles",
+        type = bool, 
         default= False,
+    )
+
+    parser.add_argument(
+        "--pic_name",
+        type = str, 
+        default= "req_map.png",
+        help="name of png",
     )
 
     cfg = parser.parse_args()
     main(cfg)
-

@@ -1,0 +1,1 @@
+./kmeans_openmp/kmeans -n 4 -i ./data/kdd_cup 

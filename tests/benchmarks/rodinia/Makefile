@@ -1,15 +1,27 @@
-# C compiler
-CC = g++
-ICC = gcc #icc
-CC_FLAGS = -g -fopenmp -O2
+makeall:
+	cd b+tree; make;
+	cd backprop; make;
+	cd bfs; make;
+	cd heartwall; make;
+	cd hotspot; make;
+	cd hotspot3D; make;
+	cd kmeans; make;
+	cd lavaMD; make;
+	cd myocyte; make;
+	cd nn; make;
+	cd pathfinder; make;
+	cd srad; make;
 
-all: bfs bfs_offload
-
-bfs: bfs.cpp 
-	$(CC) $(CC_FLAGS) bfs.cpp -o bfs 
-
-bfs_offload: bfs.cpp
-	$(ICC) $(CC_FLAGS) -DOMP_OFFLOAD bfs.cpp -o bfs_offload
-
-clean:
-	rm -f bfs bfs_offload result.txt
+cleanall:
+	cd b+tree; make clean;
+	cd backprop; make clean;
+	cd bfs; make clean;
+	cd heartwall; make clean;
+	cd hotspot; make clean;
+	cd hotspot3D; make clean;
+	cd kmeans; make clean;
+	cd lavaMD; make clean;
+	cd myocyte; make clean;
+	cd nn; make clean;
+	cd pathfinder; make clean;
+	cd srad; make clean;

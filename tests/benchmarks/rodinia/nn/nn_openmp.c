@@ -84,6 +84,8 @@ int main(int argc, char *argv[])
 	float *z;
 	z = (float *)malloc(REC_WINDOW * sizeof(float));
 
+	omp_set_num_threads(16);
+	zsim_roi_begin();
 	while (!done)
 	{
 		// Read in REC_WINDOW number of records
@@ -130,7 +132,6 @@ int main(int argc, char *argv[])
 		// z[i] = sqrt(( (tmp_lat-target_lat) * (tmp_lat-target_lat) )+( (tmp_long-target_long) * (tmp_long-target_long) ));
 		// } /* omp end parallel */
 		// #pragma omp barrier
-		zsim_roi_begin();
 #pragma scop
 		// process number of querries
 		pim_mp_begin();
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
 		}
 		pim_mp_end();
 #pragma endscop
-		zsim_roi_end();
+		
 #pragma omp barrier
 		// end of Lingjie Zhang's modification
 
@@ -170,7 +171,8 @@ int main(int argc, char *argv[])
 			}
 		}
 	} // End while loop
-
+	zsim_roi_end();
+	
 	fprintf(stderr, "The %d nearest neighbors are:\n", k);
 	for (j = 0; j < k; j++)
 	{

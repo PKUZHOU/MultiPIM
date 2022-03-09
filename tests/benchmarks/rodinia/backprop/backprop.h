@@ -1,12 +1,13 @@
 #ifndef _BACKPROP_H_
 #define _BACKPROP_H_
+#include "../common/common.h"
 
 #define BIGRND 0x7fffffff
 
 
 #define ETA 0.3       //eta value
 #define MOMENTUM 0.3  //momentum value
-#define NUM_THREAD 8 //OpenMP threads
+#define NUM_THREAD 16 //OpenMP threads
 
 
 typedef struct {

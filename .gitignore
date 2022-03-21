@@ -10,4 +10,4 @@
 SConstruct
 test-env.sh
 /common
-/configs
+# /configs

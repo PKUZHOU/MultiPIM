@@ -64,16 +64,36 @@ class System:
 
     def get_target_dimm(self, addr):
         #RoChBgBaCuVaCl
-        offset = 10
+        offset = 32
         dimm_id = (addr >> offset) % self.n_dimm
         return dimm_id
 
+    def get_toal_hops(self, req_map):
+        total_hops = 0
+        for src_id in range(req_map.shape[0]):
+            for dst_id in range(req_map.shape[1]):
+                total_hops += abs(dst_id - src_id) * req_map[src_id][dst_id]
+        return total_hops
+
     def plot(self,req_map,req_map_name):
+        # grid = plt.GridSpec(5, 5)        
+        # plt.figure(figsize=(10, 6))
+        # ax_1 = plt.subplot(grid[0:5,0:5])
+
         fig, ax = plt.subplots()  
-        im=ax.imshow(req_map)
+        im=ax.imshow(req_map, cmap = "Blues")
         ax.set_xticks(np.arange(self.n_dimm))
         ax.set_yticks(np.arange(self.n_dimm))
+
+
+
+        ax.xaxis.set_ticks_position('top')
+        ax.xaxis.set_label_position('top') 
         fig.colorbar(im,pad=0.03)
+        
+        # ax.grid(which="minor", color="w", linestyle='-', linewidth=2)
+        # ax.tick_params(which="minor", bottom=False, left=False)
+
         plt.ylabel("src ID")
         plt.xlabel("dst ID")
         plt.savefig(req_map_name)
@@ -129,6 +149,8 @@ def main(cfg):
         cycles, ipc = system.zsimIPC(cfg.h5_out)
         extimated_inter_DIMM_cycles = system.estimate_inter_DIMM_cycles()
         print(sum(cycles),extimated_inter_DIMM_cycles)
+    
+    print(system.get_toal_hops(req_map))
 
 if __name__ == '__main__':
 
@@ -143,7 +165,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--n_dimm",
         type = int, 
-        default= 32,
+        default= 8,
         help="number of DIMMs",
     )
 
@@ -169,7 +191,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--pic_name",
         type = str, 
-        default= "req_map.png",
+        default= "req_map",
         help="name of png",
     )
 

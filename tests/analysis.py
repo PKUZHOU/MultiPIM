@@ -158,21 +158,21 @@ if __name__ == '__main__':
     parser.add_argument(
         "--dump_file",
         type=str,
-        default = "exp1/mem_acc_dump_file_0",
+        default = "results/pf/mem_acc_dump_file_0",
         help="Path of the dump file",
     )
 
     parser.add_argument(
         "--n_dimm",
         type = int, 
-        default= 8,
+        default= 16,
         help="number of DIMMs",
     )
 
     parser.add_argument(
         "--h5_out",
         type = str, 
-        default= "exp1/traces.out.zsim.h5",
+        default= "results/pf/traces.out.zsim.h5",
         help="zsim stats h5",
     )
 
@@ -185,13 +185,13 @@ if __name__ == '__main__':
     parser.add_argument(
         "--cal_cycles",
         type = bool, 
-        default= False,
+        default= True,
     )
 
     parser.add_argument(
         "--pic_name",
         type = str, 
-        default= "req_map",
+        default= "heatmaps/req_map_pf.png",
         help="name of png",
     )
 

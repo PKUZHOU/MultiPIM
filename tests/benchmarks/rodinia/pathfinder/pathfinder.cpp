@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <assert.h>
+#include <omp.h>
 
 #include "timer.h"
 
@@ -14,7 +15,7 @@ void run(int argc, char **argv);
 #define pin_stats_pause(cycles) stopCycle(cycles)
 #define pin_stats_dump(cycles) printf("timer: %Lu\n", cycles)
 
-#define BENCH_PRINT
+//#define BENCH_PRINT
 
 int rows, cols;
 int *data;
@@ -93,17 +94,19 @@ void run(int argc, char **argv)
     src = new int[cols];
 
     pin_stats_reset();
+
+    zsim_roi_begin();
     for (int t = 0; t < rows - 1; t++)
     {
         temp = src;
         src = dst;
         dst = temp;
-        zsim_roi_begin();
+        
 #pragma scop
         // process number of querries
         pim_mp_begin();
 
-#pragma omp parallel for private(min)
+#pragma omp parallel for private(min) num_threads(16)
         for (int n = 0; n < cols; n++)
         {
             min = src[n];
@@ -115,8 +118,9 @@ void run(int argc, char **argv)
         }
         pim_mp_end();
 #pragma endscop
-        zsim_roi_end();
+        
     }
+    zsim_roi_end();
 
     pin_stats_pause(cycles);
     pin_stats_dump(cycles);

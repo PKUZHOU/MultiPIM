@@ -13,8 +13,6 @@
 #include "backprop.h"
 #include <math.h>
 
-#include "../common/common.h"
-
 #define OPEN
 
 #define ABS(x) (((x) > 0.0) ? (x) : (-(x)))
@@ -249,7 +247,7 @@ int n1, n2;
   zsim_roi_begin();
 #pragma scop
   // process number of querries
-  pim_mp_begin();
+  //pim_mp_begin();
 #pragma omp parallel for shared(conn, n1, n2, l1) private(k, j) reduction(+ \
                                                                           : sum) schedule(static)
 #endif
@@ -267,7 +265,7 @@ int n1, n2;
   }
   pim_mp_end();
 #pragma endscop
-  zsim_roi_end();
+  //zsim_roi_end();
 }
 
 // extern "C"
@@ -326,7 +324,7 @@ void bpnn_adjust_weights(delta, ndelta, ly, nly, w, oldw) float *delta, *ly, **w
 #ifdef OPEN
   omp_set_num_threads(NUM_THREAD);
 
-  zsim_roi_begin();
+  //zsim_roi_begin();
 #pragma scop
   // process number of querries
   pim_mp_begin();
@@ -344,7 +342,7 @@ void bpnn_adjust_weights(delta, ndelta, ly, nly, w, oldw) float *delta, *ly, **w
   }
   pim_mp_end();
 #pragma endscop
-  zsim_roi_end();
+  //zsim_roi_end();
 }
 
 void bpnn_feedforward(net)

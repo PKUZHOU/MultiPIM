@@ -19,7 +19,11 @@ backprop_face()
   load(net);
   //entering the training kernel, only one iteration
   printf("Starting training kernel\n");
+
+  zsim_roi_begin();
   bpnn_train_kernel(net, &out_err, &hid_err);
+  zsim_roi_end();
+  
   bpnn_free(net);
   printf("Training done\n");
 }

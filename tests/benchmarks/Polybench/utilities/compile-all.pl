@@ -28,6 +28,7 @@ if ($#ARGV == 1) {
 my @categories = ('linear-algebra/kernels',
                   'linear-algebra/solvers',
                   'datamining',
+                  'medley',
                   'stencils');
 
 

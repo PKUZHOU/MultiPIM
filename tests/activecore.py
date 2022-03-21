@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import os
 from subprocess import call
-import commands
+# import commands
 import re
 import matplotlib.pyplot as plt
 

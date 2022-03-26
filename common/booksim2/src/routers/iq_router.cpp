@@ -62,15 +62,18 @@ IQRouter::IQRouter( Configuration const & config, Module *parent,
   _spec_check_cred = (config.GetInt("spec_check_cred") > 0);
   _spec_mask_by_reqs = (config.GetInt("spec_mask_by_reqs") > 0);
 
-  _routing_delay    = config.GetInt( "routing_delay" );
-  _vc_alloc_delay   = config.GetInt( "vc_alloc_delay" );
+  _routing_delay    = config.GetInt( "routing_delay" ) ;//? (id==0 || id==5 || id==30 || id==35) : 0;
+  _vc_alloc_delay   = config.GetInt( "vc_alloc_delay" ) ;//? (id==0 || id==5 || id==30 || id==35) : 0;
   if(!_vc_alloc_delay) {
-    Error("VC allocator cannot have zero delay.");
+    //Error("VC allocator cannot have zero delay.");
   }
-  _sw_alloc_delay   = config.GetInt( "sw_alloc_delay" );
+  _sw_alloc_delay   = config.GetInt( "sw_alloc_delay" ) ? (id==0 || id==5 || id==30 || id==35) : 0;
   if(!_sw_alloc_delay) {
-    Error("Switch allocator cannot have zero delay.");
+    //Error("Switch allocator cannot have zero delay.");
   }
+
+  _crossbar_delay = _crossbar_delay ? (id==0 || id==5 || id==30 || id==35) : 0;
+  _credit_delay = _credit_delay ? (id==0 || id==5 || id==30 || id==35) : 0;
 
   // Routing
   string const rf = config.GetStr("routing_function") + "_" + config.GetStr("topology");
@@ -849,7 +852,7 @@ void IQRouter::_VCAllocUpdate( )
     if((time < 0) || (GetSimTime() < time)) {
       break;
     }
-    assert(GetSimTime() == time);
+    //assert(GetSimTime() == time);
 
     int const input = item.second.first.first;
     assert((input >= 0) && (input < _inputs));
@@ -1843,7 +1846,7 @@ void IQRouter::_SWAllocUpdate( )
     if((time < 0) || (GetSimTime() < time)) {
       break;
     }
-    assert(GetSimTime() == time);
+    //assert(GetSimTime() == time);
 
     int const input = item.second.first.first;
     assert((input >= 0) && (input < _inputs));
@@ -2172,7 +2175,7 @@ void IQRouter::_SwitchUpdate( )
     if((time < 0) || (GetSimTime() < time)) {
       break;
     }
-    assert(GetSimTime() == time);
+    //assert(GetSimTime() == time);
 
     Flit * const f = item.second.first;
     assert(f);

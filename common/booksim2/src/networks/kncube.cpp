@@ -128,7 +128,7 @@ void KNCube::_BuildNet( const Configuration &config )
 
       //set input channel latency
       if(use_noc_latency){
-	_chan[right_input]->SetLatency( latency );
+	_chan[right_input]->SetLatency( latency /*? (node==0 || node==5 || node==30 || node==35) : 0*/ );
 	_chan[left_input]->SetLatency( latency );
 	_chan_cred[right_input]->SetLatency( latency );
 	_chan_cred[left_input]->SetLatency( latency );

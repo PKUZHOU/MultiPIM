@@ -367,6 +367,9 @@ uint64_t CoherenceDirectory::access(MemReq &req){
 
     cc->endAccess(req);
 
+    if(req.isPIMInst)
+        dump_file << req.type <<","<< req.isPIMInst<<","<< req.srcId <<"," << req.lineAddr << std::endl;
+
     assert_msg(respCycle >= req.cycle, "[%s] resp < req? 0x%lx type %s childState %s, respCycle %ld reqCycle %ld",
             name.c_str(), req.lineAddr, AccessTypeName(req.type), MESIStateName(*req.state), respCycle, req.cycle);
     return respCycle;

@@ -26,6 +26,7 @@
 #ifndef CACHE_H_
 #define CACHE_H_
 
+#include <fstream>
 #include "cache_arrays.h"
 #include "coherence_ctrls.h"
 #include "g_std/g_string.h"
@@ -56,6 +57,9 @@ class Cache : public BaseCache {
         g_string name;
 
     public:
+        std::ofstream dump_file;
+        void initDumpFile();
+
         Cache(uint32_t _numLines, CC* _cc, CacheArray* _array, ReplPolicy* _rp, uint32_t _accLat, uint32_t _invLat, const g_string& _name);
 
         const char* getName();

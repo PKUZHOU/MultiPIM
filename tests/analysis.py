@@ -1,4 +1,5 @@
 import argparse
+from asyncore import write
 from audioop import add
 import  os
 from random import SystemRandom
@@ -185,6 +186,14 @@ def main(cfg):
         # heatmap 2
         req_map = system.estimate_distance_aware_heatmap(req_map)
         system.plot(req_map,cfg.pic_name+"_distance_aware_cost_map.png")
+        # record distance aware heatmap
+
+        with open(cfg.pic_name+"_distance_aware_cost_map.txt", 'w') as f:
+            f.write(str(req_map.shape[0])+' '+str(req_map.shape[1])+'\n')
+            for i in range(req_map.shape[0]):
+                for j in range(req_map.shape[1]):
+                    f.write(str(int(req_map[i][j]))+' ')
+                f.write('\n')
 
     # cal the cycles and ipc
     if cfg.cal_cycles:
@@ -222,7 +231,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--offset",
         type = int, 
-        default = 17,
+        default = 11,
         help= "offset of the DIMM bits in address mapping",
     )
 

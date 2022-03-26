@@ -300,7 +300,7 @@ class Scheduler : public GlobAlloc, public Callee {
                     pinCoreStatus[cid].insert(gid);
                     threadPinCoreMap[gid] = cid;
                     pinned = true;
-                    // printf("Pin to core %d\n",cid);
+                    info(" thread %d pin to core %d\n", getTid(gid), cid);
                     break;
                 }
             }
@@ -315,12 +315,15 @@ class Scheduler : public GlobAlloc, public Callee {
             for (uint32_t i = 0; i < numCores; i++) availVec[i] = i;
             uint32_t tid = getTid(gid);
             if(tid > 0) tid = tid - 3;
-            uint32_t cid = tid % numCores;
+
+            //uint32_t cid = tid % numCores;
+            //uint32_t cid = ((uint32_t)(tid/zinfo->threadPerStack))*zinfo->ramulatorConfigs->get_vaults_per_stack() + (tid % zinfo->threadPerStack);
+            uint32_t cid = zinfo->threadCoreMap[tid];
 
             new_mask[cid] = true;
             pinCoreStatus[cid].insert(gid);
             threadPinCoreMap[gid] = cid;
-            // printf("Pin thread %d to core %d\n",tid, cid);
+            printf("Pin thread %d to core %d\n",tid, cid);
         }
 
         void schedulePIMThread(uint32_t gid, const g_vector<bool>& mask, g_vector<bool>& new_mask){

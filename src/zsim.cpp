@@ -1023,6 +1023,7 @@ VOID ThreadStart(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
      * It's here and not in main() because that way the auxiliary threads can
      * start.
      */
+    info("Start new thread");
     if (procTreeNode->isInPause()) {
         futex_lock(&zinfo->pauseLocks[procIdx]);  // initialize
         info("Pausing until notified");

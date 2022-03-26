@@ -503,6 +503,29 @@ void initZsimWrapper(Config& config){
     }
 }
 
+void InitThreadMapping(Config& config)
+{
+    zinfo->threadPerStack = config.get<uint32_t>("sim.threadPerStack", 4);
+    zinfo->threads = config.get<uint32_t>("sim.threads", 16);
+    g_string threadMappingFile = config.get<const char*>("sim.threadMappingFile");
+
+    uint32_t intra_stack_offset[128]={0};
+    ifstream file(threadMappingFile.c_str());
+    
+    for(int i=0; i<zinfo->threads; ++i)
+    {
+        uint32_t thread_id, stack_id;
+        file >> thread_id >> stack_id;
+        //info("%d %d", thread_id, stack_id);
+        zinfo->threadCoreMap[thread_id] = stack_id*zinfo->ramulatorConfigs->get_vaults_per_stack()+intra_stack_offset[stack_id];
+        intra_stack_offset[stack_id]++;
+    }
+
+    for(int i=0; i<zinfo->threads; ++i)
+        info("thread %d, core %d", i, zinfo->threadCoreMap[i]);
+    file.close();
+}
+
 typedef vector<vector<BaseCache*>> CacheGroup;
 
 CacheGroup* BuildCacheGroup(Config& config, const string& name, bool isTerminal) {
@@ -1230,6 +1253,7 @@ static void InitSystem(Config& config) {
     for (pair<string, CacheGroup*> kv : cMap) delete kv.second;
     cMap.clear();
 
+    InitThreadMapping(config);
     info("Initialized system");
 }
 

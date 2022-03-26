@@ -96,6 +96,12 @@ struct GlobSimInfo {
     uint32_t numCores;
     uint32_t lineSize;
 
+    uint32_t threadPerStack;
+    uint32_t threads;
+    //g_string threadMappingFile;
+    //map<uint32_t, uint32_t> threadCoreMap;
+    uint32_t threadCoreMap[MAX_THREADS];
+
     //Cores
     Core** cores;
 

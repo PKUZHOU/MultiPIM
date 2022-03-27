@@ -217,8 +217,8 @@ class FilterCache : public Cache {
             respCycle  = access(req);
             dataAccCycle = respCycle - dataAccCycle;
 
-            if(req.isPIMInst)
-                dump_file << req.type <<","<< req.isPIMInst<<","<< req.srcId <<"," << req.lineAddr << std::endl;
+            //if(req.isPIMInst)
+                //dump_file << req.type <<","<< req.isPIMInst<<","<< req.srcId <<"," << req.lineAddr << std::endl;
 
             if(ptwTR.isValid()) {
                 if(zinfo->eventRecorders[srcId]->hasRecord()){

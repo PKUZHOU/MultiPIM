@@ -62,14 +62,14 @@ IQRouter::IQRouter( Configuration const & config, Module *parent,
   _spec_check_cred = (config.GetInt("spec_check_cred") > 0);
   _spec_mask_by_reqs = (config.GetInt("spec_mask_by_reqs") > 0);
 
-  _routing_delay    = config.GetInt( "routing_delay" ) ;//? (id==0 || id==5 || id==30 || id==35) : 0;
+  _routing_delay    = config.GetInt( "routing_delay" ) ? (id==0 || id==5 || id==30 || id==35) : 0;
   _vc_alloc_delay   = config.GetInt( "vc_alloc_delay" ) ;//? (id==0 || id==5 || id==30 || id==35) : 0;
   if(!_vc_alloc_delay) {
-    //Error("VC allocator cannot have zero delay.");
+    Error("VC allocator cannot have zero delay.");
   }
-  _sw_alloc_delay   = config.GetInt( "sw_alloc_delay" ) ? (id==0 || id==5 || id==30 || id==35) : 0;
+  _sw_alloc_delay   = config.GetInt( "sw_alloc_delay" ) ;//? (id==0 || id==5 || id==30 || id==35) : 0;
   if(!_sw_alloc_delay) {
-    //Error("Switch allocator cannot have zero delay.");
+    Error("Switch allocator cannot have zero delay.");
   }
 
   _crossbar_delay = _crossbar_delay ? (id==0 || id==5 || id==30 || id==35) : 0;

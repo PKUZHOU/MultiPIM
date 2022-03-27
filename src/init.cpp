@@ -511,6 +511,19 @@ void InitThreadMapping(Config& config)
 
     uint32_t intra_stack_offset[128]={0};
     ifstream file(threadMappingFile.c_str());
+    if(file.fail())
+    {
+        for(int i=0; i<zinfo->threads; ++i)
+        {
+            int stack_id = (i % zinfo->ramulatorConfigs->get_stacks());
+            zinfo->threadCoreMap[i] =  stack_id*zinfo->ramulatorConfigs->get_vaults_per_stack() + intra_stack_offset[stack_id];
+            intra_stack_offset[stack_id]++;
+        }
+
+        for(int i=0; i<zinfo->threads; ++i)
+            info("thread %d, core %d", i, zinfo->threadCoreMap[i]);
+        return;
+    }
     
     for(int i=0; i<zinfo->threads; ++i)
     {
